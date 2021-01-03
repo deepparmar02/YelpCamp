@@ -28,6 +28,12 @@ app.get('/campground', async (req, res) => {
     res.render('campgrounds/index', { camps });
 })
 
+app.get('/campground/:id', async (req, res) => {
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
+    res.render('campgrounds/show', { campground });
+})
+
 app.listen(3000, () => {
     console.log('listening 3000');
 })
