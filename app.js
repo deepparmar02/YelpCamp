@@ -31,8 +31,8 @@ app.get('/', (req, res) => {
 })
 
 app.get('/campground', async (req, res) => {
-    const camps = await Campground.find({});
-    res.render('campgrounds/index', { camps });
+    const campgrounds = await Campground.find({});
+    res.render('campgrounds/index', { campgrounds });
 })
 
 app.get('/campground/new', (req, res) => {
