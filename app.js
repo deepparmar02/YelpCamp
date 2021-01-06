@@ -6,7 +6,7 @@ const engine = require('ejs-mate');
 const ExpressError = require('./Utils/ExpressError');
 const catchAsync = require('./Utils/catchAsync');
 const Joi = require('joi');
-const { campgroundSchema } = require('./schemas');
+const { campgroundSchema, reviewSchema } = require('./schemas');
 const Review = require('./models/review');
 
 const mongoose = require('mongoose');
@@ -41,6 +41,16 @@ const validateCampground = (req, res, next) => {
     }
 }
 
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
+}
+
 app.get('/', (req, res) => {
     res.render('home');
 })
@@ -56,7 +66,7 @@ app.get('/campground/new', (req, res) => {
 
 app.get('/campground/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    const campground = await Campground.findById(id);
+    const campground = await Campground.findById(id).populate('reviews');
     res.render('campgrounds/show', { campground });
 }))
 
@@ -84,14 +94,22 @@ app.delete('/campground/:id', catchAsync(async (req, res) => {
     res.redirect('/campground');
 }))
 
-app.post('/campground/:id/reviews', catchAsync(async (req, res) => {
+app.post('/campground/:id/reviews', validateReview, catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
     const review = new Review(req.body.review);
+    console.log(review);
     campground.reviews.push(review);
     await review.save();
     await campground.save();
     res.redirect(`/campground/${campground._id}`);
+}))
+
+app.delete('/campground/:campId/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { campId, reviewId } = req.params;
+    await Campground.findByIdAndUpdate(campId, { $pull: { reviews: reviewId } })
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campground/${campId}`);
 }))
 
 app.all('*', (req, res, next) => {
