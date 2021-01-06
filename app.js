@@ -7,6 +7,7 @@ const ExpressError = require('./Utils/ExpressError');
 const catchAsync = require('./Utils/catchAsync');
 const Joi = require('joi');
 const { campgroundSchema } = require('./schemas');
+const Review = require('./models/review');
 
 const mongoose = require('mongoose');
 const Campground = require('./models/campgrounds')
@@ -81,6 +82,16 @@ app.delete('/campground/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/campground');
+}))
+
+app.post('/campground/:id/reviews', catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    res.redirect(`/campground/${campground._id}`);
 }))
 
 app.all('*', (req, res, next) => {
