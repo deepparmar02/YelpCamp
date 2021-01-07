@@ -68,7 +68,7 @@ app.use((req, res, next) => {
 
 app.use('/campground', campgroundRoutes);
 app.use('/campground/:id/reviews', reviewRoutes);
-app.use('/register', userRoutes);
+app.use('/', userRoutes);
 
 app.get('/', (req, res) => {
     res.render('home');
