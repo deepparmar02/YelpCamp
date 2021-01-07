@@ -29,11 +29,17 @@ router.get('/login', (req, res) => {
 
 router.post('/login', passport.authenticate('local', {
     failureFlash: true,
-    successFlash: true,
+    successFlash: 'Welcome back',
     failureRedirect: '/login',
     successRedirect: '/campground'
 }), (req, res) => {
-    console.log('yay');
+
+})
+
+router.get('/logout', (req, res) => {
+    req.logOut();
+    req.flash('success', 'Successfully logged out');
+    res.redirect('/campground');
 })
 
 
