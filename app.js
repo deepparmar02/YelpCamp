@@ -7,6 +7,7 @@ const Joi = require('joi');
 const ExpressError = require('./Utils/ExpressError');
 const session = require('express-session');
 const flash = require('connect-flash');
+//connected branch
 
 const campgrounds = require('./routes/campground');
 const reviews = require('./routes/reviews');
