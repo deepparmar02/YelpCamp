@@ -3,7 +3,6 @@ const app = express();
 const path = require('path');
 const methodOverride = require('method-override');
 const engine = require('ejs-mate');
-const Joi = require('joi');
 const ExpressError = require('./Utils/ExpressError');
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -16,7 +15,6 @@ const reviewRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/auth');
 
 const mongoose = require('mongoose');
-const { getMaxListeners } = require('./models/user');
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
