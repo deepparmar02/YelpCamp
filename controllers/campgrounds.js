@@ -24,7 +24,6 @@ module.exports.showCampground = async (req, res) => {
         req.flash('error', 'Campground does not exist');
         return res.redirect('/campground');
     }
-    console.log(campground.reviews);
     res.render('campgrounds/show', { campground });
 };
 
