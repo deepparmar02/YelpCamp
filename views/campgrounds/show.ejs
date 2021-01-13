@@ -3,6 +3,7 @@
 
     <div class="row justify-content-around">
         <div class="col-6">
+            <div id='map' style='width: 400px; height: 300px;'></div>
             <div id="campgroundCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
                 <% if (campground.images.length> 1) { %>
                     <ol class="carousel-indicators">
@@ -121,4 +122,10 @@
                         <% } %>
         </div>
     </div>
-    </div>
+    <!-- </div> -->
+
+    <script>
+        const campground = <%-JSON.stringify(campground)%>;
+    </script>
+
+    <script src="/javascripts/showPgMap.js"></script>
