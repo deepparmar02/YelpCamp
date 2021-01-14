@@ -3,7 +3,6 @@
 
     <div class="row justify-content-around">
         <div class="col-6">
-            <div id='map' style='width: 400px; height: 300px;'></div>
             <div id="campgroundCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
                 <% if (campground.images.length> 1) { %>
                     <ol class="carousel-indicators">
@@ -65,7 +64,8 @@
                         </div>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-6">
+            <div id='map' style='width:100%; height: 300px;'></div>
             <% if (currentUser) { %>
                 <h2>Leave a Review</h2>
                 <form action="/campground/<%= campground._id %>/reviews" class="mb-3 validated-form" method="POST"
@@ -125,7 +125,7 @@
     <!-- </div> -->
 
     <script>
-        const campground = <%-JSON.stringify(campground)%>;
+        const campground = <%-JSON.stringify(campground) %>;
     </script>
 
     <script src="/javascripts/showPgMap.js"></script>
