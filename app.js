@@ -13,6 +13,9 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
+const MongoStore = require('connect-mongo')(session);
+const secret = process.env.SECRET || 'secret';
 
 const campgroundRoutes = require('./routes/campground');
 const reviewRoutes = require('./routes/reviews');
@@ -23,7 +26,7 @@ const helmet = require('helmet');
 
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
@@ -46,9 +49,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
 app.use(mongoSanitize());
 
+const store = new MongoStore({
+    url: dbUrl,
+    secret,
+    touchAfter: 24 * 60 * 60
+});
+
+store.on('error', function () {
+    console.log('session store error')
+});
+
 const sessionConfig = {
+    store,
     name: 'session',
-    secret: 'secret',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -59,6 +73,7 @@ const sessionConfig = {
     }
 }
 app.use(session(sessionConfig));
+
 //comes after sessions
 app.use(passport.initialize());
 app.use(passport.session());
@@ -141,6 +156,7 @@ app.use((err, req, res, next) => {
     res.status(status).render('error', { err });
 })
 
-app.listen(3000, () => {
-    console.log('listening 3000');
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`listening ${port}`);
 })
