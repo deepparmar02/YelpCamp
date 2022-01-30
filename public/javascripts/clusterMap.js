@@ -1,4 +1,3 @@
-
 mapboxgl.accessToken = 'pk.eyJ1IjoiZDVwYXJtYXIiLCJhIjoiY2tqczA0ZmZyMTM5eDJ6cDVheDVna2YxNiJ9.ZVjyF7uxX5Z-K57COJ58pQ';
 var map = new mapboxgl.Map({
     container: 'map',
@@ -11,13 +10,8 @@ var nav = new mapboxgl.NavigationControl();
 map.addControl(nav, 'top-left');
 
 map.on('load', function () {
-    // Add a new source from our GeoJSON data and
-    // set the 'cluster' option to true. GL-JS will
-    // add the point_count property to your source data.
     map.addSource('campgrounds', {
         type: 'geojson',
-        // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
-        // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
         data: campgrounds,
         cluster: true,
         clusterMaxZoom: 14, // Max zoom to cluster points on
@@ -30,14 +24,9 @@ map.on('load', function () {
         source: 'campgrounds',
         filter: ['has', 'point_count'],
         paint: {
-            // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-            // with three steps to implement three types of circles:
-            //   * Blue, 20px circles when point count is less than 100
-            //   * Yellow, 30px circles when point count is between 100 and 750
-            //   * Pink, 40px circles when point count is greater than or equal to 750
             'circle-color': [
                 'step',
-                ['get', 'point_count'],
+                ['get', 'point_count'],  // different colors for clusters
                 '#51bbd6',
                 10,
                 '#2196f3',
@@ -100,16 +89,11 @@ map.on('load', function () {
         );
     });
 
-    // When a click event occurs on a feature in
-    // the unclustered-point layer, open a popup at
-    // the location of the feature, with
-    // description HTML from its properties.
+    // on click show small tab with campground info
     map.on('click', 'unclustered-point', function (e) {
         const text = e.features[0].properties.popUpMarkup;
         console.log(text);
         var coordinates = e.features[0].geometry.coordinates.slice();
-        var mag = e.features[0].properties.mag;
-        var tsunami;
 
         if (e.features[0].properties.tsunami === 1) {
             tsunami = 'yes';
